@@ -15,7 +15,7 @@ module.exports = (sequelize, dataTypes) => {
       allowNull: true,
       type: dataTypes.DATEONLY,
     },
-    amount: {
+    sum: {
       allowNull: false,
       type: dataTypes.INTEGER,
     },
@@ -36,7 +36,7 @@ module.exports = (sequelize, dataTypes) => {
 
   Operations.associate = (models) => {
     Operations.hasMany(models.Lists, {
-      as: "operations",
+      as: "list",
       foreignKey: "id",
     });
     Operations.belongsTo(models.Categories, {

@@ -7,5 +7,6 @@ var registerMiddleware = require("../middleware/registerMiddleware");
 router.get("/", userController.getAll);
 router.get("/:id", userController.detail);
 
-router.post("/register", userController.create);
+router.post("/register", registerMiddleware, userController.create);
+router.post("/login", userController.login);
 module.exports = router;

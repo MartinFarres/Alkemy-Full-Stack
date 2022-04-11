@@ -1,6 +1,7 @@
 var db = require("../database/models");
 var userServices = require("../services/userServices");
 var { validationResult } = require("express-validator");
+var bcryptjs = require("bcryptjs");
 
 const controller = {
     getAll: async (req, res) => {
@@ -61,6 +62,45 @@ const controller = {
             meta: {
                 status: 201,
                 url: "/users/register",
+            },
+        });
+    },
+    login: async (req, res) => {
+        let userToLogin = await userServices.findByEmail(req.body.email);
+        if (userToLogin) {
+            let comparePassword = bcryptjs.compareSync(
+                req.body.password,
+                userToLogin.password
+            );
+            if (comparePassword) {
+                req.session.userLogged = userToLogin;
+                res.send({
+                    meta: {
+                        status: 201,
+                        url: "/users/login",
+                    },
+                    data: userToLogin,
+                    session: req.session,
+                });
+            }
+            return res.send({
+                meta: {
+                    status: 404,
+                    url: "/users/login",
+                },
+                data: {
+                    errors: "The email / password combination is incorrect",
+                },
+            });
+        }
+
+        return res.send({
+            meta: {
+                status: 404,
+                url: "/users/login",
+            },
+            data: {
+                errors: "The email is not register",
             },
         });
     },
