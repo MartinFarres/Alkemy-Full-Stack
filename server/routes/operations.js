@@ -8,5 +8,6 @@ router.get("/", operationsController.getAll);
 router.get("/:id", operationsController.detail);
 
 router.post("/create", operationsMiddleware ,operationsController.create)
-
+router.put("/:id", operationsController.edit)
+router.delete("/:id", operationsController.delete)
 module.exports = router;

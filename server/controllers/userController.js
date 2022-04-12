@@ -18,7 +18,10 @@ const controller = {
                 total: users.length,
                 url: "/users",
             },
-            data: users,
+            data: {
+                users: users,
+                session: req.session.userLogged
+            }
         };
         res.json(respuesta);
     },
@@ -73,6 +76,7 @@ const controller = {
                 userToLogin.password
             );
             if (comparePassword) {
+                delete userToLogin.password
                 req.session.userLogged = userToLogin;
                 res.send({
                     meta: {
@@ -80,7 +84,7 @@ const controller = {
                         url: "/users/login",
                     },
                     data: userToLogin,
-                    session: req.session,
+                    session: req.session.userLogged,
                 });
             }
             return res.send({
