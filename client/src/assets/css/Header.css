@@ -1,4 +1,4 @@
-.Header {
+.header_wrapper {
     display: flex;
     flex-flow: row nowrap;
     width: 100%;
@@ -32,7 +32,7 @@
 .Logo {
     width: 45px;
     justify-self: center;
-    margin-right: 12px;
+    margin: 0px 12px;
 }
 
 .nav_chart {
@@ -64,7 +64,18 @@
     border: 1px solid rgb(44, 47, 54);
     box-shadow: rgb(0 0 0 / 2%) 0px 6px 10px;
 }
-
+.currency_selector {
+    border: 1px solid rgb(44, 47, 54);
+    box-shadow: rgb(0 0 0 / 2%) 0px 6px 10px;
+    background-color: rgb(25, 27, 31);
+    padding: 8px;
+    border-radius: 16px;
+    display: grid;
+    grid-auto-flow: column;
+    gap: 10px;
+    -webkit-box-align: center;
+    align-items: center;
+}
 .nav_a {
     display: flex;
     flex-flow: row nowrap;
@@ -141,4 +152,8 @@
     color: rgb(255, 255, 255);
     background-color: rgb(33, 36, 41);
     margin-bottom: 3px;
+}
+
+.drop_btn {
+    border-radius: 13px;
 }

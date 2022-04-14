@@ -3,7 +3,7 @@ html {
     font-family: "Inter", sans-serif !important;
 }
 
-ul{
+ul {
     list-style: none;
     margin: 0px;
     padding: 0px;
@@ -12,4 +12,13 @@ ul{
 a {
     color: var(--text-color);
     text-decoration: none;
+}
+
+.app_wrapper {
+    display: flex;
+    flex-flow: column;
+    align-items: flex-start;
+    background-color: rgb(33, 36, 41);
+    z-index: -500 !important;
+    height: 500px;
 }
