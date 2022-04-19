@@ -1,0 +1,24 @@
+.c-red {
+    color: #cf6679;
+}
+
+.c-purple {
+    color: #bb86fc;
+}
+
+.c-darkpurple {
+    color: #331b31 !important;
+}
+.c-blue {
+    color: #3700b3;
+}
+
+.c-tile {
+    color: #03dac5;
+}
+.c-inherit {
+    color: inherit;
+}
+.c-black2 {
+    background-color: rgb(33, 36, 41) !important;
+}
