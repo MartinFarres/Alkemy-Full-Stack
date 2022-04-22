@@ -13,13 +13,7 @@ var app = express();
 
 app.listen(process.env.PORT || 3001, () => console.log("Esto fue exitoso"));
 
-app.use(
-    cors({
-        origin: ["http://localhost:3000/"],
-        methods: ["GET", "POST", "PUT", "DELETE"],
-        credentials: true,
-    })
-);
+app.use(cors({}));
 app.use(
     session({
         secret: "Shh, a secret",

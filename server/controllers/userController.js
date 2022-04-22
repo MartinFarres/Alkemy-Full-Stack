@@ -20,8 +20,8 @@ const controller = {
             },
             data: {
                 users: users,
-                session: req.session.userLogged
-            }
+                session: req.session.userLogged,
+            },
         };
         res.json(respuesta);
     },
@@ -42,22 +42,20 @@ const controller = {
         if (resultValidation.errors.length > 0) {
             return res.send({
                 meta: {
-                    status: 404,
+                    status: 400,
                     url: "/users/create",
                 },
                 errors: resultValidation.mapped(),
             });
         }
 
-        let userInDb = await userServices.findByEmail(req.body.email);
-        if (userInDb) {
-            return res.send({
-                meta: {
-                    status: 404,
-                    url: "/users/create",
-                },
-                errors: "The email is already register",
-            });
+        let emailInDb = await userServices.findByEmail(req.body.email);
+        let userInDb = await userServices.findByUser(req.body.user);
+        console.log(userInDb);
+        if (emailInDb) {
+            return res.status(409).json({ errMessage: "Email already taken" });
+        } else if (userInDb) {
+            return res.status(409).json({ errMessage: "User already taken" });
         }
 
         await userServices.createUser(req.body);
@@ -76,7 +74,7 @@ const controller = {
                 userToLogin.password
             );
             if (comparePassword) {
-                delete userToLogin.password
+                delete userToLogin.password;
                 req.session.userLogged = userToLogin;
                 res.send({
                     meta: {

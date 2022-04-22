@@ -12,5 +12,5 @@ module.exports = [
     body("password")
         .notEmpty()
         .isLength({ min: 5 })
-        .withMessage("The password must have at least 5 characters")
+        .withMessage("The password must have at least 5 characters"),
 ];

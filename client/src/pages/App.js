@@ -17,13 +17,17 @@ function App() {
                     <Route
                         path={"/Register"}
                         exact={true}
-                        component={Register}
+                        element={<Register></Register>}
                     />
-                    <Route path={"/Login"} exact={true} component={Login} />
+                    <Route
+                        path={"/Login"}
+                        exact={true}
+                        element={<Login></Login>}
+                    />
                     <Route
                         path={"/Operation"}
                         exact={true}
-                        component={Operations}
+                        element={<Operations></Operations>}
                     />
                     <Route component={Error404} />
                 </Routes>
