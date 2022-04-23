@@ -1,9 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useContext } from "react";
+import axios from "../api/axios";
 import "../assets/css/Home.css";
+import AuthContext from "../context/AuthProvider";
 
 function Login() {
+    const { setAuth } = useContext(AuthContext);
     const userRef = useRef();
     const errRef = useRef();
 
@@ -22,6 +25,38 @@ function Login() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        try {
+            const response = await axios.post(
+                "/users/login",
+                JSON.stringify({
+                    user: user,
+                    password: pwd,
+                }),
+                {
+                    headers: { "Content-Type": "application/json" },
+                    withCredentials: true,
+                }
+            );
+            console.log(response);
+            const accessToken = response?.data?.accessToken;
+            console.log(accessToken);
+            setAuth({ user, pwd, accessToken });
+            setUser("");
+            setPwd("");
+            setSuccess(true);
+        } catch (err) {
+            console.log(err);
+            if (!err?.response) {
+                setErrMsg("No Server Response");
+            } else if (err.response?.status === 400) {
+                setErrMsg("Missing Username or Password");
+            } else if (err.response?.status === 401) {
+                setErrMsg("Unauthorized");
+            } else {
+                setErrMsg("Login Failed");
+            }
+            errRef.current.focus();
+        }
     };
     return (
         <div className="home_wrapper">

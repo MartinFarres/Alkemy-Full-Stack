@@ -19,6 +19,10 @@ module.exports = (sequelize, dataTypes) => {
             allowNull: false,
             type: dataTypes.STRING,
         },
+        refresh_token: {
+            allowNull: true,
+            type: dataTypes.STRING,
+        },
     };
     let config = {
         tableName: "users",

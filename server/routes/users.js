@@ -9,4 +9,5 @@ router.get("/:id", userController.detail);
 
 router.post("/register", registerMiddleware, userController.create);
 router.post("/login", userController.login);
+router.get("/logout", userController.logout);
 module.exports = router;

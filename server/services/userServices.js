@@ -29,4 +29,12 @@ module.exports = {
             password: bcryptjs.hashSync(body.password, 10),
         });
     },
+    async editRefreshToken(id, refreshToken) {
+        await db.Users.update(
+            {
+                refresh_token: refreshToken,
+            },
+            { where: { id } }
+        );
+    },
 };

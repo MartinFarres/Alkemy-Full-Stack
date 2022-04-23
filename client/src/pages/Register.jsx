@@ -1,5 +1,5 @@
 import React from "react";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useContext } from "react";
 import {
     faCheck,
     faTimes,
@@ -72,11 +72,18 @@ function Register() {
             return;
         }
         try {
-            const response = await axios.post("/users/register", {
-                user: user,
-                password: pwd,
-                email: email,
-            });
+            const response = await axios.post(
+                "/users/register",
+                {
+                    user: user,
+                    password: pwd,
+                    email: email,
+                },
+                {
+                    headers: { "Content-Type": "application/json" },
+                    withCredentials: true,
+                }
+            );
 
             setSuccess(true);
             setUser("");

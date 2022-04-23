@@ -2,6 +2,8 @@ var db = require("../database/models");
 var userServices = require("../services/userServices");
 var { validationResult } = require("express-validator");
 var bcryptjs = require("bcryptjs");
+var jwt = require("jsonwebtoken");
+require("dotenv").config();
 
 const controller = {
     getAll: async (req, res) => {
@@ -20,7 +22,6 @@ const controller = {
             },
             data: {
                 users: users,
-                session: req.session.userLogged,
             },
         };
         res.json(respuesta);
@@ -48,7 +49,6 @@ const controller = {
                 errors: resultValidation.mapped(),
             });
         }
-
         let emailInDb = await userServices.findByEmail(req.body.email);
         let userInDb = await userServices.findByUser(req.body.user);
         console.log(userInDb);
@@ -67,44 +67,78 @@ const controller = {
         });
     },
     login: async (req, res) => {
-        let userToLogin = await userServices.findByEmail(req.body.email);
-        if (userToLogin) {
-            let comparePassword = bcryptjs.compareSync(
-                req.body.password,
-                userToLogin.password
-            );
-            if (comparePassword) {
-                delete userToLogin.password;
-                req.session.userLogged = userToLogin;
-                res.send({
-                    meta: {
-                        status: 201,
-                        url: "/users/login",
+        const foundUser = await userServices.findByUser(req.body.user);
+        if (!foundUser) return res.sendStatus(401); //Unauthorized
+        // evaluate password
+        const match = bcryptjs.compareSync(
+            req.body.password,
+            foundUser.password
+        );
+        if (match) {
+            // create JWTs
+            const accessToken = jwt.sign(
+                {
+                    UserInfo: {
+                        user: foundUser.user,
                     },
-                    data: userToLogin,
-                    session: req.session.userLogged,
-                });
-            }
-            return res.send({
-                meta: {
-                    status: 404,
-                    url: "/users/login",
                 },
-                data: {
-                    errors: "The email / password combination is incorrect",
-                },
+                process.env.ACCESS_TOKEN_SECRET,
+                { expiresIn: "15m" }
+            );
+            const refreshToken = jwt.sign(
+                { user: foundUser.user },
+                process.env.REFRESH_TOKEN_SECRET,
+                { expiresIn: "1d" }
+            );
+            // Saving refreshToken with current user
+
+            await userServices.editRefreshToken(foundUser.id, refreshToken);
+
+            // Creates Secure Cookie with refresh token
+            res.cookie("jwt", refreshToken, {
+                httpOnly: true,
+                secure: true,
+                sameSite: "None",
+                maxAge: 24 * 60 * 60 * 1000,
             });
+
+            // Send authorization roles and access token to user
+            return res.json({ accessToken });
+        } else {
+            res.sendStatus(401);
+        }
+    },
+    logout: async (req, res) => {
+        //On react delete the accesToken
+
+        const cookies = req.cookies;
+        if (!cookies?.jwt) {
+            return res.sendStatus(204); //no cookie
         }
 
-        return res.send({
-            meta: {
-                status: 404,
-                url: "/users/login",
-            },
-            data: {
-                errors: "The email is not register",
+        const refreshToken = cookies.jwt;
+        const userFound = db.Users.findOne({
+            where: {
+                refresh_token: refreshToken,
             },
         });
+        if (!refreshToken) {
+            res.clearCookie("jwt", {
+                httpOnly: true,
+                secure: true,
+                sameSite: "none",
+                maxAge: 24 * 60 * 60 * 1000,
+            });
+            return res.sendStatus(204); //cookie but no user
+        }
+
+        //delete refreshToken in Db
+        await userServices.editRefreshToken(userFound.id, null);
+        res.clearCookie("jwt", {
+            httpOnly: true,
+            maxAge: 24 * 60 * 60 * 1000,
+        });
+        return res.sendStatus(204); //cookie and user
     },
 };
 

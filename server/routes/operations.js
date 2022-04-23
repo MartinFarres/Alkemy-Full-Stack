@@ -1,13 +1,13 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
-var operationsController = require("../controllers/operationsController")
-var operationsMiddleware = require("../middleware/operationsMiddleware")
+var operationsController = require("../controllers/operationsController");
+var operationsMiddleware = require("../middleware/operationsMiddleware");
 
 /* GET home page. */
 router.get("/", operationsController.getAll);
 router.get("/:id", operationsController.detail);
 
-router.post("/create", operationsMiddleware ,operationsController.create)
-router.put("/:id", operationsController.edit)
-router.delete("/:id", operationsController.delete)
+router.post("/create", operationsMiddleware, operationsController.create);
+router.put("/:id", operationsController.edit);
+router.delete("/:id", operationsController.delete);
 module.exports = router;
