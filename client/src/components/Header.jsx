@@ -24,17 +24,18 @@ const Header = () => {
                     className="Logo"
                 />
                 <div className="nav_chart nav_chart_mobile">
-                    <Link to={"/"} className="nav_a active">
+                    <Link to={"/Home"} className="nav_a active">
                         Home
-                    </Link>
-                    <Link to={"/Login"} className="nav_a">
-                        Login
-                    </Link>
-                    <Link to={"/Register"} className="nav_a">
-                        Register
                     </Link>
                     <Link to={"/List"} className="nav_a">
                         List
+                    </Link>
+
+                    <Link to={"/Register"} className="nav_a">
+                        Register
+                    </Link>
+                    <Link to={"/Login"} className="nav_a">
+                        Login
                     </Link>
                 </div>
                 <div className="nav_right ">

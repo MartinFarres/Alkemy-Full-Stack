@@ -75,7 +75,6 @@ const controller = {
             foundUser.password
         );
         if (match) {
-            // create JWTs
             const accessToken = jwt.sign(
                 {
                     UserInfo: {
@@ -90,11 +89,9 @@ const controller = {
                 process.env.REFRESH_TOKEN_SECRET,
                 { expiresIn: "1d" }
             );
-            // Saving refreshToken with current user
 
             await userServices.editRefreshToken(foundUser.id, refreshToken);
 
-            // Creates Secure Cookie with refresh token
             res.cookie("jwt", refreshToken, {
                 httpOnly: true,
                 secure: true,
@@ -102,7 +99,6 @@ const controller = {
                 maxAge: 24 * 60 * 60 * 1000,
             });
 
-            // Send authorization roles and access token to user
             return res.json({ accessToken });
         } else {
             res.sendStatus(401);
