@@ -1,9 +1,9 @@
 .c-red {
-    color: #cf6679;
+    color: #cf6679 !important;
 }
 
 .c-purple {
-    color: #bb86fc;
+    color: #bb86fc !important;
 }
 
 .c-white {
@@ -25,4 +25,8 @@
 }
 .c-black2 {
     background-color: rgb(33, 36, 41) !important;
+}
+
+.c-blueBtn {
+    color: rgb(80, 144, 234) !important;
 }

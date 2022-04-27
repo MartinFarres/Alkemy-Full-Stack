@@ -4,8 +4,10 @@ var db = require("../database/models");
 
 module.exports = {
     async createOperation(req) {
-        body = req.body;
-        let category = this.findCategory(body);
+        let body = req.body;
+
+        let category = await this.findCategory(body);
+        console.log(category);
         let operation = await db.Operations.create({
             concept: body.concept,
             date: body.date,
@@ -14,7 +16,7 @@ module.exports = {
             category_id: category.id,
         });
         await db.Lists.create({
-            user_id: req.session.userLogged.id,
+            user_id: body.userId,
             operation_id: operation.id,
         });
     },
@@ -50,18 +52,38 @@ module.exports = {
         return await db.Operations.findByPk(id);
     },
     async deleteOne(id) {
-        try{
+        try {
             await db.Operations.destroy({
                 where: {
                     id,
                 },
-                force: true
-            }); 
-        }catch(err){
-            return err
+                force: true,
+            });
+        } catch (err) {
+            return err;
         }
     },
-    async getAll(){
-        return db.Operations.findAll()
-    }
+    async getAll() {
+        return db.Operations.findAll();
+    },
+    async netIncome(operationsId) {
+        let incomeOp = await db.Operations.findAll({
+            where: { id: operationsId, type: "income" },
+        });
+        let sum = 0;
+        for (let i = 0; i < incomeOp.length; i++) {
+            sum += incomeOp[i].sum;
+        }
+        return sum;
+    },
+    async netOutflows(operationsId) {
+        let outflowsOp = await db.Operations.findAll({
+            where: { id: operationsId, type: "outflows" },
+        });
+        let sum = 0;
+        for (let i = 0; i < outflowsOp.length; i++) {
+            sum += outflowsOp[i].sum;
+        }
+        return sum;
+    },
 };

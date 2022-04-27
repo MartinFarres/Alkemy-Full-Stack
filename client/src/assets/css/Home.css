@@ -57,6 +57,34 @@
     text-decoration: underline;
     text-underline-position: from-font;
 }
+.icon-rigth1:hover {
+    color: blue !important;
+}
+.icon-rigth1 {
+    box-sizing: border-box;
+    margin: 0px;
+    font-weight: 500;
+    font-size: 16px;
+    color: rgb(80, 144, 234) !important;
+    opacity: 65%;
+    position: absolute;
+    top: 5px;
+    right: 35px;
+}
+.icon-rigth2:hover {
+    color: red !important;
+}
+.icon-rigth2 {
+    box-sizing: border-box;
+    margin: 0px;
+    font-weight: 500;
+    font-size: 16px;
+    color: #cf6679 !important;
+    opacity: 65%;
+    position: absolute;
+    top: 5px;
+    right: 14px;
+}
 
 .add_button {
     padding: 16px;

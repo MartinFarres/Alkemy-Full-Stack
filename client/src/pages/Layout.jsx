@@ -1,5 +1,6 @@
 import { Outlet } from "react-router-dom";
 import Header from "../components/Header";
+import "../assets/css/Home.css";
 const Layout = () => {
     return (
         <div className="app_wrapper">

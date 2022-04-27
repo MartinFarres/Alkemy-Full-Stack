@@ -45,8 +45,8 @@ const Header = () => {
                     </Link>
                     {auth?.user ? (
                         <>
-                            <Link to={"/Profile"} className="nav_a">
-                                Profile
+                            <Link to={"/Additem"} className="nav_a">
+                                Add Item
                             </Link>
                             <div onClick={logout} className="nav_a">
                                 Logout

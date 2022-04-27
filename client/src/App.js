@@ -8,6 +8,8 @@ import Operations from "./pages/Operations";
 import Error404 from "./pages/Error404";
 import Layout from "./pages/Layout";
 import RequiredAuth from "./components/RequiredAuth";
+import Additem from "./pages/AddItem.jsx";
+import List from "./pages/List";
 
 function App() {
     return (
@@ -19,6 +21,8 @@ function App() {
                     <Route element={<RequiredAuth />}>
                         <Route path={"/Home"} element={<Home />} />
                         <Route path={"/Operation"} element={<Operations />} />
+                        <Route path={"/AddItem"} element={<Additem />} />
+                        <Route path={"/List"} element={<List />} />
                         <Route path="*" component={Error404} />
                     </Route>
                 </Route>

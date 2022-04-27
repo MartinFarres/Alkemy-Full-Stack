@@ -78,6 +78,7 @@ const controller = {
             const accessToken = jwt.sign(
                 {
                     UserInfo: {
+                        id: foundUser.id,
                         user: foundUser.user,
                     },
                 },
@@ -90,8 +91,8 @@ const controller = {
                 { expiresIn: "1d" }
             );
 
-            await userServices.editRefreshToken(foundUser.id, refreshToken);
-
+            foundUser.refresh_token = refreshToken;
+            const result = await foundUser.save();
             res.cookie("jwt", refreshToken, {
                 httpOnly: true,
                 secure: true,
@@ -99,7 +100,7 @@ const controller = {
                 maxAge: 24 * 60 * 60 * 1000,
             });
 
-            return res.json({ accessToken });
+            return res.json({ accessToken, id: foundUser.id });
         } else {
             res.sendStatus(401);
         }
@@ -113,11 +114,11 @@ const controller = {
         }
 
         const refreshToken = cookies.jwt;
-        const userFound = db.Users.findOne({
+        const userFound = await db.Users.findOne({
             where: {
                 refresh_token: refreshToken,
             },
-        });
+        }).exec();
         if (!refreshToken) {
             res.clearCookie("jwt", {
                 httpOnly: true,
@@ -129,7 +130,12 @@ const controller = {
         }
 
         //delete refreshToken in Db
-        await userServices.editRefreshToken(userFound.id, null);
+        await db.Users.update(
+            { refresh_token: null },
+            {
+                where: { id: userFound },
+            }
+        );
         res.clearCookie("jwt", {
             httpOnly: true,
             maxAge: 24 * 60 * 60 * 1000,

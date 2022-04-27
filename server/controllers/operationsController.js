@@ -1,6 +1,7 @@
 var db = require("../database/models");
 var operationsServices = require("../services/operationsServices");
 var { validationResult } = require("express-validator");
+const operations = require("../database/models/operations");
 
 const controller = {
     getAll: async (req, res) => {
@@ -23,6 +24,35 @@ const controller = {
             data: operations,
         };
         res.json(respuesta);
+    },
+    getUserList: async (req, res) => {
+        const userId = req.params.id;
+        const userOperations = await db.Lists.findAll({
+            where: { user_id: userId },
+        });
+        let operationsId = [];
+        for (let i = 0; i < userOperations.length; i++) {
+            operationsId.push(userOperations[i].operation_id);
+        }
+
+        const operations = await db.Operations.findAll({
+            where: { id: operationsId },
+            include: [{ association: "categories" }],
+        });
+        
+        let netIncome = await operationsServices.netIncome(operationsId);
+        let netOutflows = await operationsServices.netOutflows(operationsId);
+
+        let response = {
+            meta: {
+                netTotal: netIncome - netOutflows,
+                netIncome,
+                netOutflows,
+            },
+            data: { operations },
+        };
+
+        return res.json(response);
     },
     detail: async (req, res) => {
         let operation = await db.Operations.findByPk(req.params.id);

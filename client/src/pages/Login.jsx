@@ -40,9 +40,10 @@ function Login() {
                     withCredentials: true,
                 }
             );
-
+            const id = response?.data?.id;
             const accessToken = response?.data?.accessToken;
-            setAuth({ user, pwd, accessToken });
+
+            setAuth({ id, user, pwd, accessToken });
 
             setUser("");
             setPwd("");
