@@ -63,7 +63,7 @@ function Home() {
                 </div>
             </div>
             <CardList
-                id={"Last Added"}
+                index={"Last Added"}
                 concept={lastOperation?.concept}
                 date={lastOperation?.date}
                 category={lastOperation?.categories?.category}

@@ -14,12 +14,13 @@ import useAuth from "../hooks/useAuth";
 const CONCEPT_REGEX = /^[a-zA-Z][a-zA-Z0-9-_]{3,15}$/;
 const SUM_REGEX = /^(?:0|[1-9][0-9]*)$/;
 
-function Additem() {
+function EditItem() {
     const { auth } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
-    const from = location.state?.from?.pathname || "/Home";
+    const from = location.state?.from?.pathname || "/List";
 
+    //Validations
     const conceptRef = useRef();
     const errRef = useRef();
 
@@ -37,10 +38,40 @@ function Additem() {
 
     const [errMsg, setErrMsg] = useState("");
 
+    //Operation
+    const [operation, setOperation] = useState({});
+    const id = location.pathname.split("/")[2];
+
     useEffect(() => {
         conceptRef.current.focus();
-    }, []);
 
+        const controller = new AbortController(); //axios cancel request
+
+        const getList = async () => {
+            try {
+                const response = await axiosPrivate.get(`/operations/${id}`, {
+                    signal: controller.signal, //cancel request if we need to
+                });
+
+                setOperation(response.data);
+            } catch (err) {
+                console.log(err);
+            }
+        };
+
+        getList();
+
+        return () => {
+            controller.abort();
+        }; //cleanup function
+    }, []);
+    useEffect(() => {
+        setConcept(operation.concept);
+        setSum(operation.sum);
+        setDate(operation.date);
+        setType(operation.type);
+        setCategory(operation?.categories?.category);
+    }, [operation]);
     useEffect(() => {
         const result = CONCEPT_REGEX.test(concept);
         setValidName(result);
@@ -65,12 +96,11 @@ function Additem() {
         }
 
         const controller = new AbortController(); //axios cancel request
-        const createItem = async () => {
+        const updateItem = async () => {
             try {
-                const response = await axiosPrivate.post(
-                    "/operations/create",
+                const response = await axiosPrivate.put(
+                    `/operations/${id}`,
                     {
-                        userId: auth.id,
                         concept: concept,
                         date: date,
                         sum: sum,
@@ -82,11 +112,6 @@ function Additem() {
                     }
                 );
 
-                setConcept("");
-                setSum("");
-                setCategory("");
-                setDate("");
-                setType("");
                 navigate(from, { replace: true });
             } catch (err) {
                 if (!err?.response) {
@@ -99,7 +124,7 @@ function Additem() {
                 errRef.current.focus();
             }
         };
-        createItem();
+        updateItem();
         return () => {
             controller.abort();
         }; //cleanup function
@@ -113,7 +138,7 @@ function Additem() {
             >
                 {errMsg}
             </p>
-            <h4 className="block-title">Add item</h4>
+            <h4 className="block-title">Edit item</h4>
 
             <label className="block-title2" htmlFor="concept">
                 Concept:
@@ -128,6 +153,7 @@ function Additem() {
                 <input
                     type="text"
                     id="concept"
+                    defaultValue={operation.concept}
                     ref={conceptRef}
                     autoComplete="off"
                     onChange={(e) => setConcept(e.target.value)}
@@ -165,6 +191,7 @@ function Additem() {
                 <input
                     type="number"
                     id="sum"
+                    defaultValue={operation.sum}
                     autoComplete="off"
                     onChange={(e) => setSum(e.target.value)}
                     required
@@ -192,50 +219,61 @@ function Additem() {
             <span className={type ? "valid" : "hide"}>
                 <FontAwesomeIcon icon={faCheck} />
             </span>
+            {type ? (
+                <div className="b-white mx-2">
+                    <select
+                        name="type"
+                        id="type"
+                        defaultValue={type}
+                        className="input-blocks"
+                        onChange={(e) => setType(e.target.value)}
+                    >
+                        <option value="income">Income</option>
+                        <option value="outflows">Outflow</option>
+                    </select>
+                </div>
+            ) : (
+                ""
+            )}
 
-            <div className="b-white mx-2">
-                <select
-                    name="type"
-                    id="type"
-                    className="input-blocks"
-                    onChange={(e) => setType(e.target.value)}
-                >
-                    <option value="">
-                        -- Please select the type of operation --
-                    </option>
-                    <option value="income">Income</option>
-                    <option value="outflows">Outflow</option>
-                </select>
-            </div>
             <label htmlFor="category" className="block-title2 mt-3">
                 Category:
             </label>
             <span className={category ? "valid" : "hide"}>
                 <FontAwesomeIcon icon={faCheck} />
             </span>
-            <div className="b-white mx-2">
-                <select
-                    name="category"
-                    id="category"
-                    className="input-blocks"
-                    onChange={(e) => setCategory(e.target.value)}
-                >
-                    <option value="">-- Please select the category --</option>
-                    <option value="Food">Food</option>
-                    <option value="Tax and Payments">Tax and Payments</option>
-                    <option value="House">House</option>
-                    <option value="Transport">Transport</option>
-                    <option value="Clothes">Clothes</option>
-                    <option value="Health and Hygiene">
-                        Health and Hygiene
-                    </option>
-                    <option value="Entertainment">Entertainment</option>
-                    <option value="Salary">Salary</option>
-                    <option value="Salary">Investments</option>
-                    <option value="Salary">Other</option>
-                </select>
-            </div>
-            <label htmlFor="categiry" className="block-title2 mt-3">
+            {category ? (
+                <div className="b-white mx-2">
+                    <select
+                        name="category"
+                        id="category"
+                        defaultValue={category}
+                        className="input-blocks"
+                        onChange={(e) => {
+                            setCategory(e.target.value);
+                        }}
+                    >
+                        <option value="Food">Food</option>
+                        <option value="Tax and Payments">
+                            Tax and Payments
+                        </option>
+                        <option value="House">House</option>
+                        <option value="Transport">Transport</option>
+                        <option value="Clothes">Clothes</option>
+                        <option value="Health and Hygiene">
+                            Health and Hygiene
+                        </option>
+                        <option value="Entertainment">Entertainment</option>
+                        <option value="Salary">Salary</option>
+                        <option value="Salary">Investments</option>
+                        <option value="Salary">Other</option>
+                    </select>
+                </div>
+            ) : (
+                ""
+            )}
+
+            <label htmlFor="date" className="block-title2 mt-3">
                 Date:
             </label>
             <span className={date ? "valid" : "hide"}>
@@ -245,6 +283,7 @@ function Additem() {
                 <input
                     type="date"
                     id="date"
+                    defaultValue={operation.date}
                     autoComplete="off"
                     required
                     className="input-blocks"
@@ -260,11 +299,11 @@ function Additem() {
                     }
                     className="add_button add_text"
                 >
-                    Add Item
+                    Edit Item
                 </button>
             </div>
         </form>
     );
 }
 
-export default Additem;
+export default EditItem;

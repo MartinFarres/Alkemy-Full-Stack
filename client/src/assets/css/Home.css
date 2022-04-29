@@ -189,3 +189,21 @@
     text-underline-position: from-font;
     margin-top: -7px;
 }
+
+.btn-red {
+    background-color: rgb(207, 102, 121);
+    border-color: #cf6679 !important;
+}
+
+.btn-red:hover {
+    background-color: #ef1438;
+}
+
+.btn-lightBlue {
+    background-color: rgb(80, 144, 234);
+    border-color: rgb(80, 144, 234) !important;
+}
+
+.btn-lightBlue:hover {
+    background-color: rgba(21, 61, 111, 0.9);
+}

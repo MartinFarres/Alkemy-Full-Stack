@@ -21,7 +21,7 @@ module.exports = {
         });
     },
     async edit(body, id) {
-        let category = this.findCategory(body);
+        let category = await this.findCategory(body);
         try {
             await db.Operations.update(
                 {

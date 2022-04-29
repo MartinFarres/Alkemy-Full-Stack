@@ -2,6 +2,10 @@
     color: #cf6679 !important;
 }
 
+.bc-red {
+    background-color: #cf6679 !important;
+}
+
 .c-purple {
     color: #bb86fc !important;
 }
@@ -29,4 +33,8 @@
 
 .c-blueBtn {
     color: rgb(80, 144, 234) !important;
+}
+
+.bc-lightBlue {
+    background-color: rgb(80, 144, 234) !important;
 }

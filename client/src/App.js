@@ -9,6 +9,7 @@ import Error404 from "./pages/Error404";
 import Layout from "./pages/Layout";
 import RequiredAuth from "./components/RequiredAuth";
 import Additem from "./pages/AddItem.jsx";
+import EditItem from "./pages/EditItem";
 import List from "./pages/List";
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
                         <Route path={"/Home"} element={<Home />} />
                         <Route path={"/Operation"} element={<Operations />} />
                         <Route path={"/AddItem"} element={<Additem />} />
+                        <Route path={"/EditItem/:id"} element={<EditItem />} />
                         <Route path={"/List"} element={<List />} />
                         <Route path="*" component={Error404} />
                     </Route>

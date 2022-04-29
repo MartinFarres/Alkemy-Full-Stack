@@ -1,7 +1,6 @@
 var db = require("../database/models");
 var operationsServices = require("../services/operationsServices");
 var { validationResult } = require("express-validator");
-const operations = require("../database/models/operations");
 
 const controller = {
     getAll: async (req, res) => {
@@ -39,7 +38,7 @@ const controller = {
             where: { id: operationsId },
             include: [{ association: "categories" }],
         });
-        
+
         let netIncome = await operationsServices.netIncome(operationsId);
         let netOutflows = await operationsServices.netOutflows(operationsId);
 
@@ -55,15 +54,11 @@ const controller = {
         return res.json(response);
     },
     detail: async (req, res) => {
-        let operation = await db.Operations.findByPk(req.params.id);
-        let respuesta = {
-            meta: {
-                status: 200,
-                url: "/operations/:id",
-            },
-            data: operation,
-        };
-        res.json(respuesta);
+        let operation = await db.Operations.findByPk(req.params.id, {
+            include: [{ association: "categories" }],
+        });
+
+        res.json(operation);
     },
     create: async (req, res) => {
         const resultValidation = validationResult(req);
@@ -106,32 +101,12 @@ const controller = {
 
         let id = req.params.id;
         await operationsServices.edit(req.body, id);
-        res.send({
-            meta: {
-                status: 200,
-                url: `/operations/${id}`,
-                method: "PUT",
-            },
-            data: {
-                message: `Operation ${id} edit succesfully`,
-                operation: await operationsServices.findOne(id),
-            },
-        });
+        res.sendStatus(200);
     },
     delete: async (req, res) => {
         let id = req.params.id;
         await operationsServices.deleteOne(id);
-        res.send({
-            meta: {
-                status: 200,
-                url: `/operations/${id}`,
-                method: "DELETE",
-            },
-            data: {
-                message: `Operation ${id} deleted succesfully`,
-                operations: await operationsServices.getAll(),
-            },
-        });
+        res.sendStatus(200);
     },
 };
 

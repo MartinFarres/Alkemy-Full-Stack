@@ -40,13 +40,14 @@ function List() {
     }, []);
 
     return (
-        <div className="my-3">
+        <div className="">
+            <h4 className="block-title">Transactions:</h4>
             {operations?.data?.operations.map((operation, index) => {
                 return (
-                    <div className="my-3" key={index}>
+                    <div className="my-2" key={index}>
                         <CardList
-                            key={index}
-                            id={index + 1}
+                            index={index + 1}
+                            id={operation?.id}
                             concept={operation?.concept}
                             date={operation?.date}
                             category={operation?.categories?.category}
