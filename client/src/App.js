@@ -20,6 +20,7 @@ function App() {
                     <Route path={"/Register"} element={<Register />} />
                     <Route path={"/Login"} element={<Login />} />
                     <Route element={<RequiredAuth />}>
+                        <Route path={"/"} element={<Home />} />
                         <Route path={"/Home"} element={<Home />} />
                         <Route path={"/Operation"} element={<Operations />} />
                         <Route path={"/AddItem"} element={<Additem />} />
